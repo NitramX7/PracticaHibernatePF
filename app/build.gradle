@@ -1,0 +1,39 @@
+plugins {
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // Hibernate ORM Core
+    implementation 'org.hibernate.orm:hibernate-core:7.1.5.Final'
+
+    // Conector de MySQL (versión moderna)
+    implementation 'com.mysql:mysql-connector-j:9.5.0'
+
+    // API de JPA (para anotaciones @Entity, @Id, etc.)
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+
+    testImplementation libs.junit.jupiter
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation libs.guava
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+    }
+}
+
+application {
+    mainClass = 'com.example.HibernatePF.App'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
