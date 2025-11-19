@@ -15,7 +15,11 @@ public class Pago {
     private double importe;
     private String metodo;
     private String estado;
-    private Date creado_en;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    Date creado_en;
+
+
 
     public Pago() {}
 

@@ -15,7 +15,11 @@ public class Valoracion {
     private int id_autor;
     private int puntuacion;
     private String comentario;
-    private Date creado_en;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    Date creado_en;
+
+
 
     public Valoracion() {}
 

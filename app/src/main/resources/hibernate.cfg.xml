@@ -5,7 +5,7 @@
 <hibernate-configuration>
   <session-factory>
     <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/plataforma_reventa?useSSL=false&amp;serverTimezone=UTC</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/plataforma_venta?useSSL=false&amp;serverTimezone=UTC</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">root</property>
 
@@ -21,6 +21,11 @@
     <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
 
     <!-- tus mapeos aquí -->
-     <mapping class="com.example.Hibernate2025.model.Amigo"/> 
+    <mapping class="com.example.HibernatePF.model.Usuario"/>
+    <mapping class="com.example.HibernatePF.model.Articulo"/>
+    <mapping class="com.example.HibernatePF.model.Pago"/>
+    <mapping class="com.example.HibernatePF.model.Valoracion"/>
+    <mapping class="com.example.HibernatePF.model.Venta"/>
+
   </session-factory>
 </hibernate-configuration>

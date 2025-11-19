@@ -16,8 +16,13 @@ public class Venta {
     private Date fecha_venta;
     private double precio_final;
     private String estado;
-    private Date creado_en;
-    private Date actualizado_en;
+   
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    Date creado_en;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    Date actualizado_en;
 
     public Venta() {}
 

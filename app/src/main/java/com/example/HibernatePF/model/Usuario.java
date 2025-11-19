@@ -14,10 +14,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import java.util.Date;
 
 @Entity
-@Table(name = "usuario")
+@Table(name = "usuarios")
 public class Usuario {
 
     @Id
@@ -28,7 +30,11 @@ public class Usuario {
     String nombre_usuario;
     String correo;
     Double valoracion;
+    
+    @Temporal(TemporalType.TIMESTAMP)
     Date creado_en;
+
+    @Temporal(TemporalType.TIMESTAMP)
     Date actualizado_en;
 
     public Usuario(String nombre_usuario, String correo, Double valoracion, Date creado_en, Date actualizado_en) {

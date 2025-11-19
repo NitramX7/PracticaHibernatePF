@@ -78,10 +78,9 @@ public class PuntoReventaDAO {
 
     // busca usuarios por nombre
     public List<Usuario> buscarPorNombre(Session session, String nombre) {
-        // de nuevo, nombre de entidad.
-        // Cambia "u.nombre" por el campo real (por ej. u.nombre_usuario) si se llama distinto.
+       
         Query<Usuario> query = session.createQuery(
-            "from Usuario u where u.nombre = :nombre", 
+            "from Usuario u where u.nombre_usuario = :nombre", 
             Usuario.class
         );
         query.setParameter("nombre", nombre);

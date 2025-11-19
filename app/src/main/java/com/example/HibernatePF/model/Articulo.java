@@ -17,9 +17,13 @@ public class Articulo {
     private double precio;
     private String ubicacion;
     private boolean disponible;
-    private Date creado_en;
-    private Date actualizado_en;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    Date creado_en;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    Date actualizado_en;
+    
     public Articulo() {}
 
     public Articulo(int id_vendedor, String titulo, String descripcion, double precio,

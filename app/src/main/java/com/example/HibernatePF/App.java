@@ -19,8 +19,7 @@ public class App {
     public static void main(String[] args) {
         
         System.out.println(new App().getGreeting());
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        Transaction tx = session.beginTransaction();
+        
 
         Scanner sc = new Scanner(System.in);
         PuntoReventaDAO dao = new PuntoReventaDAO();
@@ -42,18 +41,27 @@ public class App {
             sc.nextLine();
 
             if (apartado == 1) {
+                Session session = HibernateUtil.getSessionFactory().openSession();
                 menuUsuarios(session, dao, sc);
 
             } else if (apartado == 2) {
+                Session session = HibernateUtil.getSessionFactory().openSession();
+
                 menuArticulos(session, dao, sc);
 
             } else if (apartado == 3) {
+                Session session = HibernateUtil.getSessionFactory().openSession();
+
                 menuPagos(session, dao, sc);
 
             } else if (apartado == 4) {
+                Session session = HibernateUtil.getSessionFactory().openSession();
+
                 menuValoraciones(session, dao, sc);
 
             } else if (apartado == 5) {
+                Session session = HibernateUtil.getSessionFactory().openSession();
+
                 menuVentas(session, dao, sc);
 
             } else if (apartado == 6) {
@@ -64,8 +72,6 @@ public class App {
             }
         }
 
-        tx.commit();
-        session.close();
         sc.close();
     
     }
@@ -75,6 +81,7 @@ public class App {
     boolean volver = false;
 
     while (!volver) {
+        
 
         System.out.println("\n=== MENÚ USUARIOS ===");
         System.out.println("1. Crear usuario");
@@ -88,9 +95,12 @@ public class App {
         System.out.print("Opción: ");
 
         int opcion = leerEntero(sc);
-        sc.nextLine();
+        
 
         if (opcion == 1) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             System.out.print("Nombre de usuario: ");
             String nombre = sc.nextLine();
@@ -99,12 +109,31 @@ public class App {
             String correo = sc.nextLine();
 
             Usuario u = new Usuario();
-            // ajusta estos setters a tu entidad
+            
             u.setNombre_usuario(nombre);
             u.setCorreo(correo);
+            
+           System.out.print("Valoración: ");
+
+            
+          
+            double valoracion = leerDouble(sc);
+            
+            if(valoracion >9.9|| valoracion < 0){
+                System.out.println("Valoracion fuera de rango");
+                return;
+            }
+
+            u.setValoracion(valoracion);
+            
+            Date ahora = new Date();
+            u.setCreado_en(ahora);
+            u.setActualizado_en(ahora);
 
             dao.guardarUsuario(session, u);
             System.out.println("Usuario guardado.");
+            
+            tx.commit();
 
         } else if (opcion == 2) {
 
@@ -115,7 +144,6 @@ public class App {
 
             System.out.print("ID: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             Usuario usr = dao.buscarUsuarioPorId(session, id);
             if (usr != null) System.out.println(usr);
@@ -131,6 +159,9 @@ public class App {
             else lista.forEach(System.out::println);
 
         } else if (opcion == 5) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             System.out.print("ID a actualizar: ");
             int id = leerEntero(sc);
@@ -148,12 +179,28 @@ public class App {
                 System.out.print("Nuevo correo (vacío = igual): ");
                 String nuevoCorreo = sc.nextLine();
                 if (!nuevoCorreo.isBlank()) usr.setCorreo(nuevoCorreo);
+                
+                System.out.print("Nueva valoracion (vacío = igual): ");
+                
+                double nuevaValoracion = leerDouble(sc);
+                 if(nuevaValoracion >9.9|| nuevaValoracion < 0){
+                    System.out.println("Valoracion fuera de rango");
+                    return;
+                }
+                 usr.setValoracion(nuevaValoracion);
+                 
+                usr.setActualizado_en(new Date());
 
                 dao.actualizarUsuario(session, usr);
                 System.out.println("Usuario actualizado.");
             }
+            
+            tx.commit();
 
         } else if (opcion == 6) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             System.out.print("ID a eliminar: ");
             int id = leerEntero(sc);
@@ -162,6 +209,8 @@ public class App {
             boolean eliminado = dao.eliminarUsuarioPorId(session, id);
             if (eliminado) System.out.println("Usuario eliminado.");
             else System.out.println("No existía ese usuario.");
+            
+            tx.commit();
 
         } else if (opcion == 7) {
 
@@ -176,13 +225,16 @@ public class App {
 
             System.out.println("Opción no válida.");
         }
+
     }
+    
 }
     private static void menuArticulos(Session session, PuntoReventaDAO dao, Scanner sc) {
 
     boolean volver = false;
 
     while (!volver) {
+        
 
         System.out.println("\n=== MENÚ ARTÍCULOS ===");
         System.out.println("1. Crear artículo");
@@ -198,21 +250,52 @@ public class App {
         sc.nextLine();
 
         if (opcion == 1) {
+            
+            Transaction tx = session.beginTransaction();
 
-            Articulo a = new Articulo();
 
-            // PIDE LOS DATOS QUE TENGA TU ENTIDAD
-            // Ejemplo, cambia los nombres por los tuyos:
-            System.out.print("Nombre del artículo: ");
-            String nombre = sc.nextLine();
-            // a.setNombre(nombre);
+         
+            try {
+                Articulo a = new Articulo();
 
-            System.out.print("Descripción: ");
-            String desc = sc.nextLine();
-            // a.setDescripcion(desc);
+                System.out.print("Nombre del artículo: ");
+                String nombre = sc.nextLine();
+                a.setTitulo(nombre);
 
-            dao.guardarArticulo(session, a);
-            System.out.println("Artículo guardado (completa los setters que necesites).");
+                System.out.print("Descripción: ");
+                String desc = sc.nextLine();
+                a.setDescripcion(desc);
+
+                System.out.print("Precio: ");
+                
+                double precio = leerDouble(sc);
+                a.setPrecio(precio);
+
+                System.out.print("Ubicación: ");
+                String ubicacion = sc.nextLine();
+                a.setUbicacion(ubicacion);
+
+                System.out.print("ID del vendedor: ");
+                int idVendedor = leerEntero(sc);              
+                a.setId_vendedor(idVendedor);
+
+                a.setDisponible(true);                      
+
+                // Fechas obligatorias
+                Date ahora = new Date();
+                a.setCreado_en(ahora);
+                a.setActualizado_en(ahora);
+
+                dao.guardarArticulo(session, a);
+
+                
+                System.out.println("Artículo guardado.");
+            } catch (Exception e) {
+                tx.rollback();
+                System.out.println("Error al guardar artículo: " + e.getMessage());
+        }
+            
+            tx.commit();
 
         } else if (opcion == 2) {
 
@@ -223,13 +306,15 @@ public class App {
 
             System.out.print("ID del artículo: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             Articulo art = dao.buscarArticuloPorId(session, id);
             if (art != null) System.out.println(art);
             else System.out.println("No existe ese artículo.");
 
         } else if (opcion == 4) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             System.out.print("ID del artículo a actualizar: ");
             int id = leerEntero(sc);
@@ -240,24 +325,29 @@ public class App {
             if (art == null) {
                 System.out.println("No existe ese artículo.");
             } else {
-                // Igual que antes, ajusta a tus campos reales:
+                
                 System.out.print("Nuevo nombre (vacío = igual): ");
                 String nuevoNombre = sc.nextLine();
                 if (!nuevoNombre.isBlank()) {
-                    // art.setNombre(nuevoNombre);
+                    art.setTitulo(nuevoNombre);
                 }
 
                 System.out.print("Nueva descripción (vacío = igual): ");
                 String nuevaDesc = sc.nextLine();
                 if (!nuevaDesc.isBlank()) {
-                    // art.setDescripcion(nuevaDesc);
+                    art.setDescripcion(nuevaDesc);
                 }
 
                 dao.actualizarArticulo(session, art);
                 System.out.println("Artículo actualizado.");
+                
+                tx.commit();
             }
 
         } else if (opcion == 5) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             System.out.print("ID del artículo a eliminar: ");
             int id = leerEntero(sc);
@@ -267,6 +357,8 @@ public class App {
             if (eliminado) System.out.println("Artículo eliminado.");
             else System.out.println("No existía ese artículo.");
 
+            tx.commit();
+            
         } else if (opcion == 6) {
 
             long total = dao.contarArticulo(session);
@@ -280,7 +372,10 @@ public class App {
 
             System.out.println("Opción no válida.");
         }
+        
     }
+    
+   
 }
     private static void menuPagos(Session session, PuntoReventaDAO dao, Scanner sc) {
 
@@ -302,17 +397,21 @@ public class App {
         sc.nextLine();
 
         if (opcion == 1) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             Pago p = new Pago();
 
-            // Ajusta esto a tu entidad real:
             System.out.print("Importe: ");
-            double importe = sc.nextDouble();
-            sc.nextLine();
-            // p.setImporte(importe);
+            double importe = leerDouble(sc);
+            
+            p.setImporte(importe);
 
             dao.guardarPago(session, p);
             System.out.println("Pago guardado.");
+            
+            tx.commit();
 
         } else if (opcion == 2) {
 
@@ -323,13 +422,15 @@ public class App {
 
             System.out.print("ID del pago: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             Pago p = dao.buscarPagoPorId(session, id);
             if (p != null) System.out.println(p);
             else System.out.println("No existe ese pago.");
 
         } else if (opcion == 4) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             System.out.print("ID del pago a actualizar: ");
             int id = leerEntero(sc);
@@ -341,17 +442,22 @@ public class App {
                 System.out.println("No existe ese pago.");
             } else {
                 System.out.print("Nuevo importe (0 = igual): ");
-                double nuevoImporte = sc.nextDouble();
-                sc.nextLine();
+                double nuevoImporte = leerDouble(sc);
+                
                 if (nuevoImporte > 0) {
-                    // p.setImporte(nuevoImporte);
+                    p.setImporte(nuevoImporte);
                 }
 
                 dao.actualizarPago(session, p);
                 System.out.println("Pago actualizado.");
             }
+            
+            tx.commit();
 
         } else if (opcion == 5) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             System.out.print("ID del pago a eliminar: ");
             int id = leerEntero(sc);
@@ -360,6 +466,8 @@ public class App {
             boolean eliminado = dao.eliminarPagoPorId(session, id);
             if (eliminado) System.out.println("Pago eliminado.");
             else System.out.println("No existía ese pago.");
+            
+            tx.commit();
 
         } else if (opcion == 6) {
 
@@ -382,6 +490,7 @@ public class App {
 
     while (!volver) {
 
+        
         System.out.println("\n=== MENÚ VALORACIONES ===");
         System.out.println("1. Crear valoración");
         System.out.println("2. Listar valoraciones");
@@ -396,21 +505,29 @@ public class App {
         sc.nextLine();
 
         if (opcion == 1) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             Valoracion v = new Valoracion();
 
-            // Ejemplo: cambia a tus campos reales
             System.out.print("Puntuación (1-5): ");
             int puntos = leerEntero(sc);
             sc.nextLine();
-            // v.setPuntuacion(puntos);
+             if(puntos >5|| puntos< 1){
+                System.out.println("Puntos fuera de rango");
+                return;
+            }
+            v.setPuntuacion(puntos);
 
             System.out.print("Comentario: ");
             String comentario = sc.nextLine();
-            // v.setComentario(comentario);
-
+            v.setComentario(comentario);
+            
             dao.guardarValoracion(session, v);
             System.out.println("Valoración guardada.");
+            
+            tx.commit();
 
         } else if (opcion == 2) {
 
@@ -421,13 +538,15 @@ public class App {
 
             System.out.print("ID de la valoración: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             Valoracion v = dao.buscarValoracionPorId(session, id);
             if (v != null) System.out.println(v);
             else System.out.println("No existe esa valoración.");
 
         } else if (opcion == 4) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             System.out.print("ID de la valoración a actualizar: ");
             int id = leerEntero(sc);
@@ -439,11 +558,15 @@ public class App {
                 System.out.println("No existe esa valoración.");
             } else {
                 System.out.print("Nueva puntuación (0 = igual): ");
-                int nuevaPunt = sc.nextInt();
-                sc.nextLine();
-                if (nuevaPunt > 0) {
-                    // v.setPuntuacion(nuevaPunt);
+                int nuevaPunt = leerEntero(sc);
+                
+                 if(nuevaPunt >5|| nuevaPunt < 1){
+                System.out.println("Valoracion fuera de rango");
+                return;
                 }
+                
+                 v.setPuntuacion(opcion);
+                
 
                 System.out.print("Nuevo comentario (vacío = igual): ");
                 String nuevoCom = sc.nextLine();
@@ -454,8 +577,12 @@ public class App {
                 dao.actualizarValoracion(session, v);
                 System.out.println("Valoración actualizada.");
             }
+            tx.commit();
 
         } else if (opcion == 5) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             System.out.print("ID de la valoración a eliminar: ");
             int id = leerEntero(sc);
@@ -464,6 +591,8 @@ public class App {
             boolean eliminado = dao.eliminarValoracionPorId(session, id);
             if (eliminado) System.out.println("Valoración eliminada.");
             else System.out.println("No existía esa valoración.");
+            
+            tx.commit();
 
         } else if (opcion == 6) {
 
@@ -485,6 +614,8 @@ public class App {
     boolean volver = false;
 
     while (!volver) {
+        
+
 
         System.out.println("\n=== MENÚ VENTAS ===");
         System.out.println("1. Crear venta");
@@ -500,17 +631,22 @@ public class App {
         sc.nextLine();
 
         if (opcion == 1) {
+            
+           Transaction tx = session.beginTransaction();
+
 
             Venta v = new Venta();
 
             // Ajusta a tus campos reales:
             System.out.print("Importe total: ");
-            double totalVenta = sc.nextDouble();
-            sc.nextLine();
-            // v.setTotal(totalVenta);
+            double totalVenta = leerDouble(sc);
+           
+            v.setPrecio_final(totalVenta);
 
             dao.guardarVenta(session, v);
             System.out.println("Venta guardada.");
+            
+            tx.commit();
 
         } else if (opcion == 2) {
 
@@ -521,13 +657,15 @@ public class App {
 
             System.out.print("ID de la venta: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             Venta v = dao.buscarVentaPorId(session, id);
             if (v != null) System.out.println(v);
             else System.out.println("No existe esa venta.");
 
         } else if (opcion == 4) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             System.out.print("ID de la venta a actualizar: ");
             int id = leerEntero(sc);
@@ -539,17 +677,22 @@ public class App {
                 System.out.println("No existe esa venta.");
             } else {
                 System.out.print("Nuevo total (0 = igual): ");
-                double nuevoTotal = sc.nextDouble();
-                sc.nextLine();
+                double nuevoTotal = leerDouble(sc);
+                
                 if (nuevoTotal > 0) {
-                    // v.setTotal(nuevoTotal);
+                    v.setPrecio_final(nuevoTotal);
                 }
 
                 dao.actualizarVenta(session, v);
                 System.out.println("Venta actualizada.");
+                
+                tx.commit();
             }
 
         } else if (opcion == 5) {
+            
+            Transaction tx = session.beginTransaction();
+
 
             System.out.print("ID de la venta a eliminar: ");
             int id = leerEntero(sc);
@@ -558,6 +701,8 @@ public class App {
             boolean eliminado = dao.eliminarVentaPorId(session, id);
             if (eliminado) System.out.println("Venta eliminada.");
             else System.out.println("No existía esa venta.");
+            
+            tx.commit();
 
         } else if (opcion == 6) {
 
@@ -575,20 +720,28 @@ public class App {
     }
 }
     private static int leerEntero(Scanner sc) {
-    while (true) {
-        try {
-            int num = sc.nextInt();
-            sc.nextLine(); // limpiar buffer
-            return num;
-        } catch (Exception e) {
-            System.out.println("❗ Entrada inválida. Introduce un número válido:");
-            sc.nextLine(); // limpiar texto inválido
+        while (true) {
+            try {
+                int num = sc.nextInt();
+                sc.nextLine(); 
+                return num;
+            } catch (Exception e) {
+                System.out.println("❗ Entrada inválida. Introduce un número válido:");
+                sc.nextLine();
+            }
         }
     }
-}
 
 
-
-
-
+    private static double leerDouble(Scanner sc) {
+        while (true) {
+            try {
+                String entrada = sc.nextLine().trim();
+                entrada = entrada.replace(',', '.'); // Permite 2,5 o 2.5
+                return Double.parseDouble(entrada);
+            } catch (Exception e) {
+                System.out.println("❗ Entrada inválida. Introduce un número decimal válido:");
+            }
+        }
+    }
 }
