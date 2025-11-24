@@ -37,8 +37,8 @@ public class App {
             System.out.println("6. Salir");
             System.out.print("Opción: ");
 
-            int apartado = sc.nextInt();
-            sc.nextLine();
+            int apartado = leerEntero(sc);
+            
 
             if (apartado == 1) {
                 Session session = HibernateUtil.getSessionFactory().openSession();
@@ -165,7 +165,6 @@ public class App {
 
             System.out.print("ID a actualizar: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             Usuario usr = dao.buscarUsuarioPorId(session, id);
 
@@ -204,11 +203,13 @@ public class App {
 
             System.out.print("ID a eliminar: ");
             int id = leerEntero(sc);
-            sc.nextLine();
+            
 
             boolean eliminado = dao.eliminarUsuarioPorId(session, id);
             if (eliminado) System.out.println("Usuario eliminado.");
             else System.out.println("No existía ese usuario.");
+            
+            
             
             tx.commit();
 
@@ -246,8 +247,8 @@ public class App {
         System.out.println("0. Volver");
         System.out.print("Opción: ");
 
-        int opcion = sc.nextInt();
-        sc.nextLine();
+        int opcion = leerEntero(sc);
+        
 
         if (opcion == 1) {
             
@@ -318,7 +319,7 @@ public class App {
 
             System.out.print("ID del artículo a actualizar: ");
             int id = leerEntero(sc);
-            sc.nextLine();
+            
 
             Articulo art = dao.buscarArticuloPorId(session, id);
 
@@ -351,7 +352,6 @@ public class App {
 
             System.out.print("ID del artículo a eliminar: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             boolean eliminado = dao.eliminarArticuloPorId(session, id);
             if (eliminado) System.out.println("Artículo eliminado.");
@@ -393,8 +393,7 @@ public class App {
         System.out.println("0. Volver");
         System.out.print("Opción: ");
 
-        int opcion = sc.nextInt();
-        sc.nextLine();
+        int opcion = leerEntero(sc);
 
         if (opcion == 1) {
             
@@ -448,7 +447,6 @@ public class App {
 
             System.out.print("ID del pago a actualizar: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             Pago p = dao.buscarPagoPorId(session, id);
 
@@ -475,7 +473,6 @@ public class App {
 
             System.out.print("ID del pago a eliminar: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             boolean eliminado = dao.eliminarPagoPorId(session, id);
             if (eliminado) System.out.println("Pago eliminado.");
@@ -515,8 +512,7 @@ public class App {
         System.out.println("0. Volver");
         System.out.print("Opción: ");
 
-        int opcion = sc.nextInt();
-        sc.nextLine();
+        int opcion = leerEntero(sc);
 
         if (opcion == 1) {
             
@@ -527,7 +523,6 @@ public class App {
 
             System.out.print("Puntuación (1-5): ");
             int puntos = leerEntero(sc);
-            sc.nextLine();
              if(puntos >5|| puntos< 1){
                 System.out.println("Puntos fuera de rango");
                 return;
@@ -575,7 +570,6 @@ public class App {
 
             System.out.print("ID de la valoración a actualizar: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             Valoracion v = dao.buscarValoracionPorId(session, id);
 
@@ -584,7 +578,6 @@ public class App {
             } else {
                 System.out.print("Nueva puntuación (0 = igual): ");
                 int nuevaPunt = leerEntero(sc);
-                sc.nextLine();
                 
                  if (nuevaPunt != 0) {
                     if (nuevaPunt < 1 || nuevaPunt > 5) {
@@ -615,7 +608,6 @@ public class App {
 
             System.out.print("ID de la valoración a eliminar: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             boolean eliminado = dao.eliminarValoracionPorId(session, id);
             if (eliminado) System.out.println("Valoración eliminada.");
@@ -656,8 +648,7 @@ public class App {
         System.out.println("0. Volver");
         System.out.print("Opción: ");
 
-        int opcion = sc.nextInt();
-        sc.nextLine();
+        int opcion = leerEntero(sc);
 
         if (opcion == 1) {
             
@@ -714,7 +705,6 @@ public class App {
 
             System.out.print("ID de la venta a actualizar: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             Venta v = dao.buscarVentaPorId(session, id);
 
@@ -741,7 +731,6 @@ public class App {
 
             System.out.print("ID de la venta a eliminar: ");
             int id = leerEntero(sc);
-            sc.nextLine();
 
             boolean eliminado = dao.eliminarVentaPorId(session, id);
             if (eliminado) System.out.println("Venta eliminada.");
@@ -768,7 +757,8 @@ public class App {
         while (true) {
             try {
                 int num = sc.nextInt();
-                sc.nextLine(); 
+                sc.nextLine();
+
                 return num;
             } catch (Exception e) {
                 System.out.println("❗ Entrada inválida. Introduce un número válido:");

@@ -10,7 +10,7 @@
 </property>
 
     <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password">12345</property>
+    <property name="hibernate.connection.password">root</property>
 
     <!-- No hace falta fijar el dialecto; Hibernate 7 lo detecta, pero si quieres: -->
     <!-- <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property> -->
