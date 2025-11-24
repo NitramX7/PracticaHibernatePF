@@ -407,6 +407,20 @@ public class App {
             double importe = leerDouble(sc);
             
             p.setImporte(importe);
+            
+            System.out.println("Método de pago (tarjeta, bizum, efectivo...):");
+            String metodo = sc.nextLine();
+            if(metodo.isBlank()) {
+                metodo = "desconocido";
+            }
+            p.setMetodo(metodo);
+            p.setEstado("pendiente");
+            
+            System.out.println("ID de la venta relacionada:");
+            int idVenta = leerEntero(sc);
+            p.setId_venta(idVenta);
+            Date ahora = new Date();
+            p.setCreado_en(ahora);
 
             dao.guardarPago(session, p);
             System.out.println("Pago guardado.");
@@ -524,6 +538,17 @@ public class App {
             String comentario = sc.nextLine();
             v.setComentario(comentario);
             
+            System.out.print("ID del autor (usuario): ");
+            int idAutor = leerEntero(sc);
+            v.setId_autor(idAutor);
+            
+            System.out.print("ID de la venta valorada: ");
+            int idVenta = leerEntero(sc);
+            v.setId_venta(idVenta);
+            
+            Date ahora = new Date();
+            v.setCreado_en(ahora);
+            
             dao.guardarValoracion(session, v);
             System.out.println("Valoración guardada.");
             
@@ -559,20 +584,24 @@ public class App {
             } else {
                 System.out.print("Nueva puntuación (0 = igual): ");
                 int nuevaPunt = leerEntero(sc);
+                sc.nextLine();
                 
-                 if(nuevaPunt >5|| nuevaPunt < 1){
-                System.out.println("Valoracion fuera de rango");
-                return;
+                 if (nuevaPunt != 0) {
+                    if (nuevaPunt < 1 || nuevaPunt > 5) {
+                         System.out.println("Puntuación fuera de rango");
+                         tx.rollback();
+                         return;
                 }
-                
-                 v.setPuntuacion(opcion);
+                    v.setPuntuacion(nuevaPunt);
+             }
                 
 
                 System.out.print("Nuevo comentario (vacío = igual): ");
                 String nuevoCom = sc.nextLine();
                 if (!nuevoCom.isBlank()) {
-                    // v.setComentario(nuevoCom);
+                    v.setComentario(nuevoCom);
                 }
+                v.setCreado_en(new Date());
 
                 dao.actualizarValoracion(session, v);
                 System.out.println("Valoración actualizada.");
@@ -642,6 +671,22 @@ public class App {
             double totalVenta = leerDouble(sc);
            
             v.setPrecio_final(totalVenta);
+            
+            System.out.print("ID del artículo vendido: ");
+            int idArticulo = leerEntero(sc);
+            v.setId_articulo(idArticulo);
+            
+            System.out.print("ID del comprador: ");
+            int idComprador = leerEntero(sc);
+            v.setId_comprador(idComprador);
+            
+            v.setEstado("pendiente");
+            
+            Date ahora = new Date();
+            v.setFecha_venta(ahora);
+            v.setCreado_en(ahora);
+            v.setActualizado_en(ahora);
+            
 
             dao.guardarVenta(session, v);
             System.out.println("Venta guardada.");
